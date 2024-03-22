@@ -111,7 +111,7 @@ public class Program
             commandUser = Console.ReadLine();
             if (commandUser != "0")
             {
-                commandUserId = SearchById(Users, ref commandUser); // Передаем два аргумента
+                commandUserId = SearchById(Users, ref commandUser);
             }
             else
             {
@@ -133,12 +133,9 @@ public class Program
                         }
                         else
                         {
-                            if (Users[commandUserId].UserRules.Length > 1)
+                            for (int i = 0; i < Users[commandUserId].UserRules.Length - 1; i++)
                             {
-                                for (int i = 0; i < Users[commandUserId].UserRules.Length - 1; i++)
-                                {
-                                    Console.Write($"{Users[commandUserId].UserRules[i].post}, ");
-                                }
+                                Console.Write($"{Users[commandUserId].UserRules[i].post}, ");
                             }
                             Console.WriteLine($"{Users[commandUserId].UserRules[Users[commandUserId].UserRules.Length - 1].post}");
                         }
@@ -148,12 +145,59 @@ public class Program
                         Console.WriteLine("0 - выйти из редактирования ролей у пользователя");
                         commandRule = byte.Parse(Console.ReadLine());
 
-                         
+                        switch (commandRule)
+                        {
+                            case 1:
+                                // Логика удаления роли у пользователя
+                                Console.WriteLine("Выберите номер роли для удаления:");
+                                for (int i = 0; i < Users[commandUserId].UserRules.Length; i++)
+                                {
+                                    Console.WriteLine($"{i + 1}. {Users[commandUserId].UserRules[i].post}");
+                                }
+                                int roleToRemoveIndex = int.Parse(Console.ReadLine()) - 1;
+                                if (roleToRemoveIndex >= 0 && roleToRemoveIndex < Users[commandUserId].UserRules.Length)
+                                {
+                                    Users[commandUserId].UserRules = Users[commandUserId].UserRules.Where((source, index) => index != roleToRemoveIndex).ToArray();
+                                    Console.WriteLine("Роль успешно удалена.");
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Некорректный номер роли.");
+                                }
+                                break;
+                            case 2:
+                                // Логика добавления роли пользователю
+                                Console.WriteLine("Выберите номер роли для добавления:");
+                                for (int i = 0; i < Rules.Length; i++)
+                                {
+                                    Console.WriteLine($"{i + 1}. {Rules[i].post}");
+                                }
+                                int roleToAddIndex = int.Parse(Console.ReadLine()) - 1;
+                                if (roleToAddIndex >= 0 && roleToAddIndex < Rules.Length)
+                                {
+                                    Array.Resize(ref Users[commandUserId].UserRules, Users[commandUserId].UserRules.Length + 1);
+                                    Users[commandUserId].UserRules[Users[commandUserId].UserRules.Length - 1] = Rules[roleToAddIndex];
+                                    Console.WriteLine("Роль успешно добавлена.");
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Некорректный номер роли.");
+                                }
+                                break;
+                            case 0:
+                                Execute = true;
+                                break;
+                            default:
+                                Console.WriteLine("Некорректная команда.");
+                                break;
+                        }
+
                     }
                     break;
             }
         }
     }
+
 
 
 

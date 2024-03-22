@@ -380,26 +380,26 @@ public class Program
 
         Rules[1].post = "Должность_2";
         Rules[1].id = 2;
-        Rules[1].rights = new string[] { StrSort("RW"), "", "", "", "", "", StrSort("RA") };
+        Rules[1].rights = new string[] {  "", "", "", StrSort("RW"), "", "", StrSort("RA") };
 
         Rules[2].post = "Должность_3";
         Rules[2].id = 3;
-        Rules[2].rights = new string[] { "", "", StrSort("RWCA"), StrSort("RWAC"), "", "", "" };
+        Rules[2].rights = new string[] { "", "", StrSort("RWAC"), "", "", "", StrSort("RWCA") };
 
         Rules[3].post = "Должность_4";
         Rules[3].id = 4;
-        Rules[3].rights = new string[] { StrSort("RWCA"), "", "", "", "", "", "" };
+        Rules[3].rights = new string[] { "", "", "", "", "", StrSort("RWCA"), "" };
 
         // Изначальное случайное назначение ролей
         Random random = new Random();
         for (int i = 0; i < numUsers; i++)
         {
             Users[i].UserId = "User" + IntToStr(i + 1);
-            Users[i].UserRules = new Rule[1]; // Initialize user rules array
-            Users[i].UserRules[0] = new Rule(); // Initialize the rule struct
-            Users[i].UserRules[0].post = Rules[random.Next(0, 4)].post; // Assign a random rule to the user
-            Users[i].UserRules[0].rights = Rules[random.Next(0, 4)].rights; // Assign rights for the rule
-            Users[i].UserRules[0].id = Users[i].UserRules[0].id; // Assign an ID to the rule
+            Users[i].UserRules = new Rule[1]; 
+            Users[i].UserRules[0] = new Rule(); 
+            Users[i].UserRules[0].post = Rules[random.Next(0, 4)].post; 
+            Users[i].UserRules[0].rights = Rules[random.Next(0, 4)].rights; 
+            Users[i].UserRules[0].id = Users[i].UserRules[0].id; 
             userList[i] = Users[i].UserId;
         }
 

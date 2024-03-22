@@ -127,17 +127,17 @@ public class Program
                     {
                         Console.WriteLine();
                         Console.Write($"Список ролей у пользователя {commandUser}: ");
-                        if (Users[commandUserId].UserRules.Length == 0)
+                        if (Users[commandUserId - 1].UserRules.Length == 0)
                         {
                             Console.WriteLine("-");
                         }
                         else
                         {
-                            for (int i = 0; i < Users[commandUserId].UserRules.Length - 1; i++)
+                            for (int i = 0; i < Users[commandUserId - 1].UserRules.Length - 1; i++)
                             {
-                                Console.Write($"{Users[commandUserId].UserRules[i].post}, ");
+                                Console.Write($"{Users[commandUserId - 1].UserRules[i].post}, ");
                             }
-                            Console.WriteLine($"{Users[commandUserId].UserRules[Users[commandUserId].UserRules.Length - 1].post}");
+                            Console.WriteLine($"{Users[commandUserId - 1].UserRules[Users[commandUserId - 1].UserRules.Length - 1].post}");
                         }
                         Console.WriteLine("Введите действие: ");
                         Console.WriteLine("1 - удаление роли у пользователя");
@@ -150,14 +150,16 @@ public class Program
                             case 1:
                                 // Логика удаления роли у пользователя
                                 Console.WriteLine("Выберите номер роли для удаления:");
-                                for (int i = 0; i < Users[commandUserId].UserRules.Length; i++)
+                                for (int i = 0; i < Users[commandUserId - 1].UserRules.Length; i++)
                                 {
-                                    Console.WriteLine($"{i + 1}. {Users[commandUserId].UserRules[i].post}");
+                                    Console.WriteLine($"{i + 1}. {Users[commandUserId - 1].UserRules[i].post}");
                                 }
                                 int roleToRemoveIndex = int.Parse(Console.ReadLine()) - 1;
-                                if (roleToRemoveIndex >= 0 && roleToRemoveIndex < Users[commandUserId].UserRules.Length)
+                                if (roleToRemoveIndex >= 0 && roleToRemoveIndex < Users[commandUserId - 1].UserRules.Length)
                                 {
-                                    Users[commandUserId].UserRules = Users[commandUserId].UserRules.Where((source, index) => index != roleToRemoveIndex).ToArray();
+                                    List<Rule> updatedRoles = new List<Rule>(Users[commandUserId - 1].UserRules);
+                                    updatedRoles.RemoveAt(roleToRemoveIndex);
+                                    Users[commandUserId - 1].UserRules = updatedRoles.ToArray();
                                     Console.WriteLine("Роль успешно удалена.");
                                 }
                                 else
@@ -165,6 +167,7 @@ public class Program
                                     Console.WriteLine("Некорректный номер роли.");
                                 }
                                 break;
+                            
                             case 2:
                                 // Логика добавления роли пользователю
                                 Console.WriteLine("Выберите номер роли для добавления:");
@@ -175,8 +178,10 @@ public class Program
                                 int roleToAddIndex = int.Parse(Console.ReadLine()) - 1;
                                 if (roleToAddIndex >= 0 && roleToAddIndex < Rules.Length)
                                 {
-                                    Array.Resize(ref Users[commandUserId].UserRules, Users[commandUserId].UserRules.Length + 1);
-                                    Users[commandUserId].UserRules[Users[commandUserId].UserRules.Length - 1] = Rules[roleToAddIndex];
+                                    // Extend the user's rule array by one
+                                    Array.Resize(ref Users[commandUserId - 1].UserRules, Users[commandUserId - 1].UserRules.Length + 1);
+                                    // Add the selected rule to the user's rule array
+                                    Users[commandUserId - 1].UserRules[Users[commandUserId - 1].UserRules.Length - 1] = Rules[roleToAddIndex];
                                     Console.WriteLine("Роль успешно добавлена.");
                                 }
                                 else
@@ -184,12 +189,10 @@ public class Program
                                     Console.WriteLine("Некорректный номер роли.");
                                 }
                                 break;
+
                             case 0:
                                 Execute = true;
-                                break;
-                            default:
-                                Console.WriteLine("Некорректная команда.");
-                                break;
+                                break; 
                         }
 
                     }
@@ -392,8 +395,11 @@ public class Program
         for (int i = 0; i < numUsers; i++)
         {
             Users[i].UserId = "User" + IntToStr(i + 1);
-            Users[i].UserRules = new Rule[1];
-            Users[i].UserRules[0] = Rules[random.Next(0, 4)];
+            Users[i].UserRules = new Rule[1]; // Initialize user rules array
+            Users[i].UserRules[0] = new Rule(); // Initialize the rule struct
+            Users[i].UserRules[0].post = Rules[random.Next(0, 4)].post; // Assign a random rule to the user
+            Users[i].UserRules[0].rights = Rules[random.Next(0, 4)].rights; // Assign rights for the rule
+            Users[i].UserRules[0].id = Users[i].UserRules[0].id; // Assign an ID to the rule
             userList[i] = Users[i].UserId;
         }
 
